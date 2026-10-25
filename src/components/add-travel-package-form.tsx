@@ -1,11 +1,10 @@
 "use client"
 
-import type { ReactNode } from "react"
 import Link from "next/link"
 import { Plus, Trash2 } from "lucide-react"
+import { FormField } from "@/components/form-field"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
@@ -14,6 +13,12 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { useForm } from "@/hooks/use-form"
+import {
+  initialTravelPackageFormValues,
+  travelPackageCategories,
+  type TravelPackageFormValues,
+} from "@/lib/travel-package"
 import { cn } from "cn"
 
 const inputClass =
@@ -25,35 +30,30 @@ const textareaClass =
 const selectTriggerClass =
   "h-10! w-full rounded-sm border-neutral-200 bg-[#f8f8f8] px-3 text-sm text-neutral-900 shadow-none focus-visible:border-brand focus-visible:ring-brand/20"
 
-function FormField({
-  label,
-  htmlFor,
-  children,
-}: {
-  label: string
-  htmlFor: string
-  children: ReactNode
-}) {
-  return (
-    <div className="grid gap-2">
-      <Label htmlFor={htmlFor} className="text-sm font-medium text-neutral-700">
-        {label}
-      </Label>
-      {children}
-    </div>
-  )
+type AddTravelPackageFormProps = {
+  onSubmit?: (values: TravelPackageFormValues) => void | Promise<void>
 }
 
-export function AddTravelPackageForm() {
+export function AddTravelPackageForm({ onSubmit }: AddTravelPackageFormProps) {
+  const {
+    values,
+    isSubmitting,
+    handleChange,
+    handleSelectChange,
+    handleSubmit,
+  } = useForm({
+    initialValues: initialTravelPackageFormValues,
+    onSubmit,
+  })
+
   return (
-    <form
-      className="grid gap-5"
-      onSubmit={(event) => event.preventDefault()}
-    >
+    <form className="grid gap-5" onSubmit={handleSubmit}>
       <FormField label="Destination Name" htmlFor="destination-name">
         <Input
           id="destination-name"
           name="destinationName"
+          value={values.destinationName}
+          onChange={handleChange}
           placeholder="Bali Paradise"
           className={inputClass}
         />
@@ -64,23 +64,28 @@ export function AddTravelPackageForm() {
           <Input
             id="country"
             name="country"
+            value={values.country}
+            onChange={handleChange}
             placeholder="Indonesia"
             className={inputClass}
           />
         </FormField>
 
         <FormField label="Category" htmlFor="category">
-          <Select name="category" defaultValue="Beach">
+          <Select
+            name="category"
+            value={values.category}
+            onValueChange={handleSelectChange("category")}
+          >
             <SelectTrigger id="category" className={selectTriggerClass}>
               <SelectValue placeholder="Beach" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Beach">Beach</SelectItem>
-              <SelectItem value="Mountain">Mountain</SelectItem>
-              <SelectItem value="City">City</SelectItem>
-              <SelectItem value="Adventure">Adventure</SelectItem>
-              <SelectItem value="Cultural">Cultural</SelectItem>
-              <SelectItem value="Cruise">Cruise</SelectItem>
+              {travelPackageCategories.map((category) => (
+                <SelectItem key={category} value={category}>
+                  {category}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </FormField>
@@ -92,6 +97,8 @@ export function AddTravelPackageForm() {
             id="price"
             name="price"
             type="number"
+            value={values.price}
+            onChange={handleChange}
             placeholder="e.g., 1299"
             className={cn(
               inputClass,
@@ -104,6 +111,8 @@ export function AddTravelPackageForm() {
           <Input
             id="duration"
             name="duration"
+            value={values.duration}
+            onChange={handleChange}
             placeholder="e.g., 7 Days/6 Nights"
             className={inputClass}
           />
@@ -115,6 +124,8 @@ export function AddTravelPackageForm() {
           id="departure-date"
           name="departureDate"
           type="date"
+          value={values.departureDate}
+          onChange={handleChange}
           className={inputClass}
         />
       </FormField>
@@ -124,6 +135,8 @@ export function AddTravelPackageForm() {
           id="image-url"
           name="imageUrl"
           type="url"
+          value={values.imageUrl}
+          onChange={handleChange}
           placeholder="https://example.com/image.jpg"
           className={inputClass}
         />
@@ -133,6 +146,8 @@ export function AddTravelPackageForm() {
         <Textarea
           id="description"
           name="description"
+          value={values.description}
+          onChange={handleChange}
           placeholder="Describe the travel experience..."
           className={textareaClass}
         />
@@ -151,10 +166,11 @@ export function AddTravelPackageForm() {
         </Link>
         <Button
           type="submit"
+          disabled={isSubmitting}
           className="h-10 rounded-sm bg-brand px-4 text-sm text-brand-foreground hover:bg-brand/90"
         >
           <Plus className="size-4" aria-hidden="true" />
-          Add Travel Package
+          {isSubmitting ? "Adding..." : "Add Travel Package"}
         </Button>
       </div>
     </form>
