@@ -1,3 +1,4 @@
+import { Cta } from "@/components/cta"
 import { Hero } from "@/components/hero"
 import { Testimonials } from "@/components/testimonials"
 import { WhyChoose } from "@/components/why-choose"
@@ -8,6 +9,7 @@ export default function Home() {
       <Hero />
       <WhyChoose />
       <Testimonials />
+      <Cta />
     </>
   )
 }
