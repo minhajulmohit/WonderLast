@@ -20,6 +20,11 @@ export type TravelPackageFormValues = {
   description: string
 }
 
+export type TravelDestination = Omit<TravelPackageFormValues, "category"> & {
+  id: string
+  category: string
+}
+
 export const initialTravelPackageFormValues: TravelPackageFormValues = {
   destinationName: "",
   country: "",

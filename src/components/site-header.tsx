@@ -8,7 +8,7 @@ import { Menu, UserRound, X } from "lucide-react";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Destinations", href: "#destinations" },
+  { label: "Destinations", href: "/destinations" },
   { label: "My Bookings", href: "#bookings" },
   { label: "Admin", href: "/add-destination" },
 ];

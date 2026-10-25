@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Josefin_Sans, Playfair_Display } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -27,7 +28,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${josefinSans.variable} ${playfairDisplay.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <SiteHeader />
+        <Suspense
+          fallback={
+            <div
+              aria-hidden="true"
+              className="mx-auto my-4 h-10 w-full lg:h-12"
+            />
+          }
+        >
+          <SiteHeader />
+        </Suspense>
         <main className="flex-1">{children}</main>
         <SiteFooter />
       </body>
